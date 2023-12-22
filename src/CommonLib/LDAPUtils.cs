@@ -8,6 +8,7 @@ using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Contexts;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -1702,18 +1703,30 @@ namespace SharpHoundCommonLib
 
         public string GetConfigurationPath(string domainName = null)
         {
-            var rootDse = domainName == null
-                ? new DirectoryEntry("LDAP://RootDSE")
-                : new DirectoryEntry($"LDAP://{NormalizeDomainName(domainName)}/RootDSE");
+            string path = domainName == null
+                ? "LDAP://RootDSE"
+                : $"LDAP://{NormalizeDomainName(domainName)}/RootDSE";
+
+            DirectoryEntry rootDse;
+            if (_ldapConfig.Username != null)
+                rootDse = new DirectoryEntry(path, _ldapConfig.Username, _ldapConfig.Password);
+            else
+                rootDse = new DirectoryEntry(path);
 
             return $"{rootDse.Properties["configurationNamingContext"]?[0]}";
         }
 
         public string GetSchemaPath(string domainName)
         {
-            var rootDse = domainName == null
-                ? new DirectoryEntry("LDAP://RootDSE")
-                : new DirectoryEntry($"LDAP://{NormalizeDomainName(domainName)}/RootDSE");
+            string path = domainName == null
+                ? "LDAP://RootDSE"
+                : $"LDAP://{NormalizeDomainName(domainName)}/RootDSE";
+
+            DirectoryEntry rootDse;
+            if (_ldapConfig.Username != null)
+                rootDse = new DirectoryEntry(path, _ldapConfig.Username, _ldapConfig.Password);
+            else
+                rootDse = new DirectoryEntry(path);
 
             return $"{rootDse.Properties["schemaNamingContext"]?[0]}";
         }
