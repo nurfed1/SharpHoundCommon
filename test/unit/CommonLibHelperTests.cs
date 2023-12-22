@@ -211,7 +211,7 @@ namespace CommonLibTest
         [Fact]
         public void ConvertTimestampToUnixEpoch_ValidTimestamp_ValidUnixEpoch()
         {
-            var d = DateTime.Parse("2021-06-21T00:00:00");
+            var d = DateTime.Parse("2021-06-21T00:00:00Z");
             var result =
                 SharpHoundCommonLib.Helpers.ConvertFileTimeToUnixEpoch(d.ToFileTimeUtc().ToString()); // get the epoch
             var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(result); // create an offset from the epoch
